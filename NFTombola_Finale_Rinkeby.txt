@@ -1,0 +1,291 @@
+
+//SPDX-License-Identifier: UNLICENSED
+pragma solidity >=0.6.0 <0.9.0;
+
+import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+
+
+// https://giphy.com/gifs/vintage-white-P41U9FUef8cXm
+
+/// @title ERC-721 Non-Fungible Token Standard
+/// @dev See https://eips.ethereum.org/EIPS/eip-721
+///  Note: the ERC-165 identifier for this interface is 0x80ac58cd.
+interface ERC721 /* is ERC165 */ {
+    /// @dev This emits when ownership of any NFT changes by any mechanism.
+    ///  This event emits when NFTs are created (`from` == 0) and destroyed
+    ///  (`to` == 0). Exception: during contract creation, any number of NFTs
+    ///  may be created and assigned without emitting Transfer. At the time of
+    ///  any transfer, the approved address for that NFT (if any) is reset to none.
+
+    event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
+    /// @dev This emits when the approved address for an NFT is changed or
+    ///  reaffirmed. The zero address indicates there is no approved address.
+    ///  When a Transfer event emits, this also indicates that the approved
+    ///  address for that NFT (if any) is reset to none.
+   
+   
+   // event Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
+    /// @dev This emits when an operator is enabled or disabled for an owner.
+    ///  The operator can manage all NFTs of the owner.
+  
+  
+  //  event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
+    /// @notice Count all NFTs assigned to an owner
+    /// @dev NFTs assigned to the zero address are considered invalid, and this
+    ///  function throws for queries about the zero address.
+    /// @param _owner An address for whom to query the balance
+    /// @return The number of NFTs owned by `_owner`, possibly zero
+ 
+ 
+    function balanceOf(address _owner) external view returns (uint256);
+    /// @notice Find the owner of an NFT
+    /// @dev NFTs assigned to zero address are considered invalid, and queries
+    ///  about them do throw.
+    /// @param _tokenId The identifier for an NFT
+    /// @return The address of the owner of the NFT
+ //
+    function ownerOf(uint256 _tokenId) external view returns (address);
+    /// @notice Transfers the ownership of an NFT from one address to another address
+    /// @dev Throws unless `msg.sender` is the current owner, an authorized
+    ///  operator, or the approved address for this NFT. Throws if `_from` is
+    ///  not the current owner. Throws if `_to` is the zero address. Throws if
+    ///  `_tokenId` is not a valid NFT. When transfer is complete, this function
+    ///  checks if `_to` is a smart contract (code size > 0). If so, it calls
+    ///  `onERC721Received` on `_to` and throws if the return value is not
+    ///  `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`.
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+    /// @param data Additional data with no specified format, sent in call to `_to`
+//oko
+//    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes memory data) external payable;
+    /// @notice Transfers the ownership of an NFT from one address to another address
+    /// @dev This works identically to the other function with an extra data parameter,
+    ///  except this function just sets data to "".
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+
+// ha degli dati adizionali che manda qcosa a me. oko
+    // function safeTransferFrom(address _from, address _to, uint256 _tokenId) external payable;
+    /// @notice Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE
+    ///  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE
+    ///  THEY MAY BE PERMANENTLY LOST
+    /// @dev Throws unless `msg.sender` is the current owner, an authorized
+    ///  operator, or the approved address for this NFT. Throws if `_from` is
+    ///  not the current owner. Throws if `_to` is the zero address. Throws if
+    ///  `_tokenId` is not a valid NFT.
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+
+    // function transferFrom(address _from, address _to, uint256 _tokenId) external payable;
+    /// @notice Change or reaffirm the approved address for an NFT
+    /// @dev The zero address indicates there is no approved address.
+    ///  Throws unless `msg.sender` is the current NFT owner, or an authorized
+    ///  operator of the current owner.
+    /// @param _approved The new approved NFT controller
+    /// @param _tokenId The NFT to approve
+  
+  
+  
+  // function approve(address _approved, uint256 _tokenId) external payable;
+    /// @notice Enable or disable approval for a third party ("operator") to manage
+    ///  all of `msg.sender`'s assets
+    /// @dev Emits the ApprovalForAll event. The contract MUST allow
+    ///  multiple operators per owner.
+    /// @param _operator Address to add to the set of authorized operators
+    /// @param _approved True if the operator is approved, false to revoke approval
+ 
+ 
+ 
+ //   function setApprovalForAll(address _operator, bool _approved) external;
+    /// @notice Get the approved address for a single NFT
+    /// @dev Throws if `_tokenId` is not a valid NFT.
+    /// @param _tokenId The NFT to find the approved address for
+    /// @return The approved address for this NFT, or the zero address if there is none
+
+//    function getApproved(uint256 _tokenId) external view returns (address);
+    /// @notice Query if an address is an authorized operator for another address
+    /// @param _owner The address that owns the NFTs
+    /// @param _operator The address that acts on behalf of the owner
+    /// @return True if `_operator` is an approved operator for `_owner`, false otherwise
+ 
+ 
+ 
+ //   function isApprovedForAll(address _owner, address _operator) external view returns (bool);
+}
+/// @title ERC-721 Non-Fungible Token Standard, optional metadata extension
+/// @dev See https://eips.ethereum.org/EIPS/eip-721
+///  Note: the ERC-165 identifier for this interface is 0x5b5e139f.
+interface ERC721Metadata /* is ERC721 */ {
+    /// @notice A descriptive name for a collection of NFTs in this contract
+    function name() external view returns (string memory _name);
+    /// @notice An abbreviated name for NFTs in this contract
+    function symbol() external view returns (string memory _symbol);
+    /// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
+    /// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
+    ///  3986. The URI may point to a JSON file that conforms to the "ERC721
+    ///  Metadata JSON Schema".
+    function tokenURI(uint256 _tokenId) external view returns (string memory);
+}
+
+contract MMFNFT91 is ERC721,ERC721Metadata{
+
+    constructor(){
+        artist=msg.sender;
+        numberTokens=0;
+    }
+
+// tutto pubblico per debugging. 
+
+    string public NFTname="MMFArt98";
+    string public NFTsymbol="MMF98";
+    string public defaultURI="http://www.paolocoletti.it/crypto/NFT/coletti.json";
+    address public artist;
+    uint256 public numberTokens; 
+    mapping(uint256=>address) public tokenOwner;
+    mapping(uint256=>string) public tokenURIs;
+    mapping(address=>uint) public howManyTokens;
+    mapping (address => uint) public balances;
+
+    function name() public override view returns (string memory){
+        return NFTname;
+    }
+    function symbol() public override view returns (string memory){
+        return NFTsymbol;
+    }
+    function tokenURI(uint256 _tokenId) public override view returns (string memory){
+        require(_tokenId<numberTokens, "token non ancora creato!"); 
+        return tokenURIs[_tokenId];
+    }
+    function _mint(string memory _tokenURI, address owner) public returns(uint256){
+        uint256 tokenID=numberTokens;
+        numberTokens+=1;
+        tokenOwner[tokenID]=owner; 
+        howManyTokens[owner]+=1;
+        if (bytes(_tokenURI).length==0){
+            tokenURIs[tokenID]=defaultURI; 
+        } else {
+            tokenURIs[tokenID]=_tokenURI;
+        }
+    emit Transfer(owner, owner, tokenID);
+    return tokenID;
+    } // 
+
+    function balanceOf(address _owner) public override view returns (uint256){ 
+        return howManyTokens[_owner];
+    }
+    function ownerOf(uint256 _tokenId) public override view returns (address){
+        require(_tokenId<numberTokens,"Token does not exist");
+        return tokenOwner[_tokenId];
+    } 
+
+}
+
+ 
+contract RandomNumberConsumer is VRFConsumerBase {
+
+    // MMFNFT91 myNFTinstance;
+    bytes32 internal keyHash;
+    uint256 internal fee;
+    uint256 public randomResult; 
+    uint256 public indexCount;
+    mapping(uint256=>address) public indexToParticipantAddress;
+    mapping(address=>bool) public isParticipating;
+    address public artist;
+    StatusType public tombolaStatus; 
+    uint256 public contractBalance; 
+    enum StatusType {openEnrol,closeEnrol,closedAndPayed}
+    address public auditor;  
+  
+
+    /*
+     * Constructor inherits VRFConsumerBase
+     * 
+      Network: Rinkeby 
+     LINK TOKEN ADDRESS   0x01BE23585060835E02B77ef475b0Cc51aA1e0709 rinkeby
+     chainlink VRF coordinator address for rinkeby: 0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B
+     key hash for rinkeby   0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311
+
+     */ 
+    constructor(address a) 
+        VRFConsumerBase(
+            0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B, // VRF Coordinator
+            0x01BE23585060835E02B77ef475b0Cc51aA1e0709  // LINK Token
+        )
+    {
+        keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311;
+        fee = 0.1 * 10 ** 18; // 0.1 LINK (Varies by network)
+        indexCount=0;
+        artist = payable(msg.sender);
+        tombolaStatus = StatusType.openEnrol;
+        auditor = a;
+        randomResult=0; 
+    }
+    
+
+    function take_part () public payable {
+        require(msg.value>=10, "Minimum 10 wei to participate");
+        require((! isParticipating[msg.sender]==true), "You already participated, please wait for the results!");
+        require(tombolaStatus==StatusType.openEnrol, "Registering is closed, try next time!");
+        require(msg.sender!=artist, "The artist cannot enrol!");
+        require(msg.sender!=auditor, "The auditor cannot enrol!");
+        indexCount = indexCount + 1;
+        indexToParticipantAddress[indexCount]=msg.sender;
+        isParticipating[msg.sender]=true;
+        contractBalance = contractBalance+msg.value;
+
+    }
+    function _mint2(MMFNFT91 myNFTinstance, string memory _tokenURI) public returns(uint256){
+        MMFNFT91 my_instance = MMFNFT91(myNFTinstance);
+        require(msg.sender==artist, "Only the artist can call this function!"); 
+        // require(indexCount>1, "There is only one participant, let us wait for some more!");
+        return my_instance._mint(_tokenURI, indexToParticipantAddress[randomResult]);
+        
+    }
+
+
+    function infoWinner() public view returns (address){
+        return indexToParticipantAddress[randomResult]; 
+    }
+
+    function infoNFT() public pure returns (string memory){
+        string memory txt = "This Tombola is raffling the unique daisy NFT laurammf02"; 
+        return txt;
+    }
+
+    function getRandomNumber() public returns (bytes32 requestId) {
+        // require(tombolaStatus==StatusType.closeEnrol, "The sattus does not allow"); STATUS
+        require(msg.sender==auditor, "Only the auditor can call this function!");
+        require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with faucet");
+        return requestRandomness(keyHash, fee);
+    }
+
+    /**
+     * Callback function used by VRF Coordinator
+     */
+    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+        randomResult = randomness % indexCount + 1;
+    }
+    function payTheArtist() public payable{
+        require(msg.sender==auditor, "Only the auditor can interfere here!");
+        require(randomResult!=0, "First call the random number!");
+        contractBalance=0;
+        payable(artist).transfer((address(this).balance));
+        tombolaStatus=StatusType.closedAndPayed;
+    }
+
+/* 
+   //  OKO non funzionano ma in real life sarebbero importanti
+    function closeTombola() public{ 
+         require(tombolaStatus==StatusType.openEnrol, "Tombola is already closed!");
+         require(msg.sender==auditor, "Only the auditor can interfere here!");// require artist here 
+         tombolaStatus=StatusType.closeEnrol; 
+     }
+     function withdrawLink() external {} - Implement a withdraw function to avoid locking your LINK in the contract
+*/
+    }
+
+    
+
